@@ -33,6 +33,7 @@ import org.basex.query.func.json.*;
 import org.basex.query.func.map.*;
 import org.basex.query.func.math.*;
 import org.basex.query.func.out.*;
+import org.basex.query.func.parallel.*;
 import org.basex.query.func.proc.*;
 import org.basex.query.func.prof.*;
 import org.basex.query.func.random.*;
@@ -1033,6 +1034,12 @@ public enum Function {
   _OUT_TAB(OutTab.class, "tab()", arg(), STR, OUT_URI),
   /** XQuery function. */
   _OUT_FORMAT(OutFormat.class, "format(format,item1[,...])", arg(STR, ITEM), STR, OUT_URI),
+
+  /* Parallel Module. */
+
+  /** XQuery function. */
+  _PARALLEL_FOR_EACH(ParallelForEach.class, "for-each(expr,threads)",
+      arg(ITEM_ZM, ITR), ITEM_ZM, flag(NDT), PARALLEL_URI),
 
   /* Process Module. */
 

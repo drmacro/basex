@@ -58,6 +58,7 @@ public final class NSGlobal {
     NS.add(FT_PREFIX, FT_URI);
     NS.add(HASH_PREFIX, HASH_URI);
     NS.add(HOF_PREFIX, HOF_URI);
+    NS.add(PARALLEL_PREFIX, PARALLEL_URI);
     NS.add(HTML_PREFIX, HTML_URI);
     NS.add(INDEX_PREFIX, INDEX_URI);
     NS.add(INSPECT_PREFIX, INSPECT_URI);

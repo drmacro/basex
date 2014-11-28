@@ -515,6 +515,8 @@ public interface QueryText {
   byte[] ZIP_PREFIX = token("zip");
   /** HOF token. */
   byte[] HOF_PREFIX = token("hof");
+  /** PARALLEL token. */
+  byte[] PARALLEL_PREFIX = token("parallel");
   /** HTML token. */
   byte[] HTML_PREFIX = token("html");
   /** JSON token. */
@@ -645,6 +647,8 @@ public interface QueryText {
   byte[] JSON_URI = token(BXMODULES_URI + "json");
   /** Output module URI. */
   byte[] OUT_URI = token(BXMODULES_URI + "out");
+  /** Parallelmodule URI. */
+  byte[] PARALLEL_URI = token(BXMODULES_URI + "parallel");
   /** Process module URI. */
   byte[] PROC_URI = token(BXMODULES_URI + "proc");
   /** Profiling module URI. */
