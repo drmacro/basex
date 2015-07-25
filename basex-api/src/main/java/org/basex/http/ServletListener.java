@@ -1,16 +1,14 @@
 package org.basex.http;
 
 import javax.servlet.*;
-import javax.servlet.annotation.*;
 
 /**
- * <p>Servlet listener.</p>
+ * This class creates and destroys servlet contexts.
  *
  * @author BaseX Team 2005-15, BSD License
  * @author Christian Gruen
  */
-@WebListener
-public abstract class ServletListener implements ServletContextListener {
+public final class ServletListener implements ServletContextListener {
   @Override
   public void contextInitialized(final ServletContextEvent event) {
   }

@@ -29,6 +29,8 @@ import org.basex.gui.view.tree.*;
 import org.basex.io.*;
 import org.basex.io.out.*;
 import org.basex.query.*;
+import org.basex.query.value.*;
+import org.basex.query.value.seq.*;
 import org.basex.util.*;
 import org.basex.util.options.*;
 
@@ -377,10 +379,10 @@ public final class GUI extends JFrame {
     // check and add default namespace
     final Data data = context.data();
     final Namespaces ns = data.nspaces;
-    String in = qu.trim().isEmpty() ? "()" : qu;
-    final int u = ns.uri(Token.EMPTY, 0, data);
-    if(u != 0) in = Util.info("declare default element namespace \"%\"; %", ns.uri(u), in);
-    execute(edit, new XQuery(in));
+    String q = qu.trim().isEmpty() ? "()" : qu;
+    final int uriId = ns.uriIdForPrefix(Token.EMPTY, 0, data);
+    if(uriId != 0) q = Util.info("declare default element namespace \"%\"; %", ns.uri(uriId), q);
+    execute(edit, new XQuery(q));
   }
 
   /**
@@ -449,6 +451,10 @@ public final class GUI extends JFrame {
       // execute command and cache result
       final ArrayOutput ao = new ArrayOutput();
       ao.setLimit(gopts.get(GUIOptions.MAXTEXT));
+      // sets the maximum number of hits
+      cmd.maxResults(gopts.get(GUIOptions.MAXRESULTS));
+
+      // checks if the command is updating
       updating = cmd.updating(context);
 
       // updates the query editor
@@ -491,13 +497,14 @@ public final class GUI extends JFrame {
         }
       } else {
         // get query result
-        final Result result = cmd.finish();
+        final Value result = cmd.finish();
         DBNodes nodes = result instanceof DBNodes && result.size() != 0 ? (DBNodes) result : null;
 
+        final boolean updated = cmd.updated(context);
         if(context.data() != data) {
           // database reference has changed - notify views
           notify.init();
-        } else if(cmd.updated(context)) {
+        } else if(updated) {
           // update visualizations
           notify.update();
           // adopt updated nodes as result set
@@ -506,7 +513,7 @@ public final class GUI extends JFrame {
           // check if result has changed
           final boolean flt = gopts.get(GUIOptions.FILTERRT);
           final DBNodes curr = context.current();
-          if(flt || curr != null && !curr.equals(current)) {
+          if(flt || curr != null && !curr.sameAs(current)) {
             // refresh context if at least one node was found
             if(nodes != null) notify.context(nodes, flt, null);
           } else if(context.marked != null) {
@@ -536,7 +543,8 @@ public final class GUI extends JFrame {
             // assign textual output if no node result was created
             text.setText(ao);
           }
-          text.cacheText(ao, cmd, result);
+          // only cache output if data has not been updated (in which case notifyUpdate was called)
+          if(!updated) text.cache(ao, cmd, result);
         }
       }
     } catch(final Exception ex) {
@@ -672,7 +680,7 @@ public final class GUI extends JFrame {
    * @param n number of results
    */
   private void setResults(final long n) {
-    int mh = context.options.get(MainOptions.MAXHITS);
+    int mh = gopts.get(GUIOptions.MAXRESULTS);
     if(mh < 0) mh = Integer.MAX_VALUE;
     hits.setText(Util.info(RESULTS_X, (n >= mh ? "\u2265" : "") + n));
   }
